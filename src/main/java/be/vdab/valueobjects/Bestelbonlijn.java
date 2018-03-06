@@ -19,4 +19,31 @@ public class Bestelbonlijn implements Serializable {
 	private Wijn wijn;
 	private int aantal;
 	private BigDecimal prijs;
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + aantal;
+		result = prime * result + ((wijn == null) ? 0 : wijn.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Bestelbonlijn))
+			return false;
+		Bestelbonlijn other = (Bestelbonlijn) obj;
+		if (aantal != other.aantal)
+			return false;
+		if (wijn == null) {
+			if (other.wijn != null)
+				return false;
+		} else if (!wijn.equals(other.wijn))
+			return false;
+		return true;
+	}
 }

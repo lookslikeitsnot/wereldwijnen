@@ -26,4 +26,31 @@ public class Wijn implements Serializable {
 	private int inBestelling;
 	@Version
 	private int versie;
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + jaar;
+		result = prime * result + ((soort == null) ? 0 : soort.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Wijn))
+			return false;
+		Wijn other = (Wijn) obj;
+		if (jaar != other.jaar)
+			return false;
+		if (soort == null) {
+			if (other.soort != null)
+				return false;
+		} else if (!soort.equals(other.soort))
+			return false;
+		return true;
+	}
 }

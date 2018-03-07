@@ -1,0 +1,50 @@
+/* nav {outline:1px dashed red;} */
+body {
+	background-color: #FFEC9F;
+	font-family: sans-serif;
+	width: 90%;
+	max-width: 960px;
+	margin: auto;
+}
+
+header {
+	text-align: center;
+	background-image: url("../images/intro.jpg");
+	background-size: 100% 100%;
+}
+
+header h1{
+	padding: 2% 0 0 0;
+	color: #FFEC9F;
+}
+
+header nav{
+	text-align: center;
+}
+
+header nav img:hover{
+	transform: scale(1.2);
+}
+
+nav ul {
+	display:inline-block;
+	list-style-type: none;
+}
+
+nav li {
+	display:inline;
+	padding: 1%;
+}
+
+/*clearfix hack*/
+.clearFix:before, .clearFix:after {
+    content: " ";
+    display: table;
+}
+.clearFix:after {
+    clear: both;
+}
+/* enkel voor IE6/7 */
+.clearFix {
+    *zoom: 1;
+}

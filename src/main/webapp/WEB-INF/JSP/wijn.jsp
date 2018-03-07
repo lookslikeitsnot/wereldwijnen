@@ -1,0 +1,30 @@
+<%@ page contentType='text/html' pageEncoding='UTF-8' session='false'%>
+<%@taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core'%>
+<%@taglib prefix="v" uri='http://vdab.be/tags'%>
+<!doctype html>
+<html lang='nl'>
+<v:head title='Wereldwijnen' />
+<body>
+	<v:header />
+	<a href="<c:url value='/'/>">Terug naar overzicht</a>
+	<c:choose>
+		<c:when test="${not empty wijn}">
+		<dl>
+		<dt>Land</dt>
+		<dd>${wijn.soort.land.naam}</dd>
+		<dt>Soort</dt>
+		<dd>${wijn.soort.naam}</dd>
+		<dt>Jaar</dt>
+		<dd>${wijn.jaar}</dd>
+		<dt>Beoordeling</dt>
+		<dd><c:forEach begin='1' end='${wijn.beoordeling}'>&#9733;</c:forEach></dd>
+		<dt>Prijs</dt>
+		<dd>${wijn.prijs}</dd>
+		</dl>
+		</c:when>
+		<c:otherwise>
+			<h1>Wijn niet gevonden</h1>
+		</c:otherwise>
+	</c:choose>
+</body>
+</html>

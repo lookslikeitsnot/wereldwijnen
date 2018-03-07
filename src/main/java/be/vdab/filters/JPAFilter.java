@@ -16,7 +16,7 @@ import javax.servlet.annotation.WebFilter;
 @WebFilter("*.htm")
 public class JPAFilter implements Filter {
 	private static final EntityManagerFactory entityManagerFactory = Persistence
-			.createEntityManagerFactory("werldwijnen");
+			.createEntityManagerFactory("wereldwijnen");
 	private static final ThreadLocal<EntityManager> entityManagers = new ThreadLocal<>();
 
 	@Override

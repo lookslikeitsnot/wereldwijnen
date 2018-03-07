@@ -12,9 +12,12 @@
 				<li><a href="${landurl}"><img
 						src=<c:url value="/images/${land.id}.png"/> alt="${land.naam}"></a></li>
 			</c:forEach>
-			<c:if test="${not empty mandje}">
-				<img src=<c:url value="/images/mandje.png"/> alt="mandje">
-			</c:if>
+			
 		</ul>
+		<p>
+		<c:if test="${not empty sessionScope.mandje}">
+			<a href=''><img src=<c:url value="/images/mandje.png"/> alt="mandje"></a>
+		</c:if>
+		<p>
 	</nav>
 </header>

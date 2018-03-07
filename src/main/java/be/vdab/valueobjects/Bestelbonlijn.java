@@ -22,6 +22,13 @@ public class Bestelbonlijn implements Serializable {
 	private int aantal;
 	private BigDecimal prijs;
 	
+	public Bestelbonlijn() {}
+	
+	public Bestelbonlijn(Wijn wijn, int aantal) {
+		this.wijn = wijn;
+		this.aantal = aantal;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

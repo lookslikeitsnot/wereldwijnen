@@ -1,11 +1,13 @@
-package be.vdab.entities;
+package be.vdab.valueobjects;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-
-import be.vdab.valueobjects.Bestelbonlijn;
 
 public class Mandje {
 	private Set<Bestelbonlijn> mandje;
+	public Mandje() {
+		mandje = new LinkedHashSet<>();
+	}
 
 	public Set<Bestelbonlijn> getMandje() {
 		return mandje;

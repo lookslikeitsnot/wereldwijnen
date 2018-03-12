@@ -46,7 +46,7 @@
 			<input type="submit" value='Als bon bevestigen'>
 		</form>
 	</c:if>
-	<c:if test="${not empty sessionScope.bestelbonnummer}">
+	<c:if test="${empty sessionScope.mandje && not empty sessionScope.bestelbonnummer}">
 	<h2>Je mandje is bevestigd als bestelbon ${sessionScope.bestelbonnummer}</h2>
 	</c:if>
 </body>

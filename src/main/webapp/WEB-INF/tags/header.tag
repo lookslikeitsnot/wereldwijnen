@@ -3,7 +3,7 @@
 
 <header>
 	<h1>Wereldwijnen</h1>
-	<nav class="clearFix">
+	<nav>
 		<ul>
 			<c:forEach items="${landen}" var="land">
 				<c:url value='' var='landurl'>

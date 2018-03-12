@@ -61,3 +61,13 @@ tbody tr:nth-child(odd) {
 tbody tr:hover {
 	background-color: #FFEC9F;
 }
+
+dt {
+	float: left;
+	width: 15em;
+}
+
+dd {
+	margin-left: 15em;
+	font-weight: bold;
+}

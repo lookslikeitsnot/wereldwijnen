@@ -6,5 +6,4 @@ public class BestelbonRepository extends AbstractRepository {
 	public void create(Bestelbon bestelbon) {
 		getEntityManager().persist(bestelbon);
 	}
-
 }

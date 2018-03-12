@@ -11,15 +11,15 @@ public class Adres implements Serializable {
 	private String huisNr;
 	private String postcode;
 	private String gemeente;
-
-//	public Adres(String straat, String huisNr, String postcode, String gemeente) {
-//		this.straat = straat;
-//		this.huisNr = huisNr;
-//		this.postcode = postcode;
-//		this.gemeente = gemeente;
-//	}
-//
+	
 	protected Adres() {}
+
+	public Adres(String straat, String huisNr, String postcode, String gemeente) {
+		this.straat = straat;
+		this.huisNr = huisNr;
+		this.postcode = postcode;
+		this.gemeente = gemeente;
+	}
 
 	public String getStraat() {
 		return straat;

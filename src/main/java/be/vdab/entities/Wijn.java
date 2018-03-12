@@ -30,6 +30,21 @@ public class Wijn implements Serializable {
 	@Version
 	private int versie;
 	
+	public long getId() {
+		return id;
+	}
+	public Soort getSoort() {
+		return soort;
+	}
+	public short getJaar() {
+		return jaar;
+	}
+	public short getBeoordeling() {
+		return beoordeling;
+	}
+	public BigDecimal getPrijs() {
+		return prijs;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -56,21 +71,4 @@ public class Wijn implements Serializable {
 			return false;
 		return true;
 	}
-	public long getId() {
-		return id;
-	}
-	public Soort getSoort() {
-		return soort;
-	}
-	public short getJaar() {
-		return jaar;
-	}
-	public short getBeoordeling() {
-		return beoordeling;
-	}
-	public BigDecimal getPrijs() {
-		return prijs;
-	}
-	
-	
 }

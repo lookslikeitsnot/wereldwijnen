@@ -35,6 +35,21 @@ public class Bestelbon implements Serializable{
 	@ElementCollection
 	@CollectionTable(name = "bestelbonlijnen", joinColumns = @JoinColumn(name = "bonid"))
 	private Set<Bestelbonlijn> bestelbonlijnen;
+	
+	public Bestelbon(String naam, Adres adres, short bestelwijze, Set<Bestelbonlijn> bestelbonlijnen) {
+		this.naam = naam;
+		this.adres = adres;
+		this.bestelwijze = bestelwijze;
+		this.bestelbonlijnen = bestelbonlijnen;
+		besteld = LocalDateTime.now();
+	}
+	
+	public Bestelbon() {}
+	
+	public long getId() {
+		return id;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -79,6 +94,4 @@ public class Bestelbon implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
 }

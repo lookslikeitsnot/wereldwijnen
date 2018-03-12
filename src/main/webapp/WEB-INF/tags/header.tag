@@ -16,7 +16,7 @@
 		</ul>
 		<p>
 		<c:if test="${not empty sessionScope.mandje}">
-			<a href=''><img src=<c:url value="/images/mandje.png"/> alt="mandje"></a>
+			<a href='mandje.htm'><img src=<c:url value="/images/mandje.png"/> alt="mandje"></a>
 		</c:if>
 		<p>
 	</nav>

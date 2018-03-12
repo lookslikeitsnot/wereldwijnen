@@ -29,7 +29,7 @@
 			</dl>
 			<form method="post">
 				<label for="aantalflessen">Aantal flessen</label> <input
-					type="number" min='1' name="aantalflessen" id="aantalflessen">
+					type="number" min='1' name="aantalflessen" id="aantalflessen" autofocus required>
 					<input type='hidden' name='wijnid' value='${param.wijnid}'>${fouten.aantalflessen}
 				<input type="submit" value="Toevoegen">
 			</form>

@@ -20,7 +20,7 @@ public class Wijn implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "soortid")
 	private Soort soort;
 	private short jaar;

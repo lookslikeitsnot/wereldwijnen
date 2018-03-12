@@ -15,6 +15,9 @@ public class Mandje {
 	}
 	
 	public void add(Bestelbonlijn bestelbonlijn) {
+		if(mandje.contains(bestelbonlijn)) {
+			mandje.remove(bestelbonlijn);
+		}
 		mandje.add(bestelbonlijn);
 	}
 	

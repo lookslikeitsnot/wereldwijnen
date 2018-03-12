@@ -34,7 +34,6 @@ public class WijnServlet extends HttpServlet {
 			if (StringUtils.isLong(wijnIdString)) {
 				long wijnId = Long.parseLong(wijnIdString);
 				wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
-				;
 			}
 		}
 		request.getRequestDispatcher(VIEW).forward(request, response);
@@ -48,7 +47,7 @@ public class WijnServlet extends HttpServlet {
 		String aantalFlessenString = request.getParameter("aantalflessen");
 		if (StringUtils.isInt(aantalFlessenString)) {
 			int aantalFlessen = Integer.parseInt(aantalFlessenString);
-			if (aantalFlessen > 0) {
+			if (aantalFlessen > 0 && aantalFlessen < 100000) {
 				if (StringUtils.isLong(wijnIdString)) {
 					long wijnId = Long.parseLong(wijnIdString);
 					wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
@@ -65,14 +64,18 @@ public class WijnServlet extends HttpServlet {
 					session.setAttribute("mandje", mandje);
 				}
 			} else {
-				fouten.put("aantalflessen", "Moet groter dan 1 zijn");
+				fouten.put("aantalflessen", "Moet groter dan 1 en kleiner dan 100000 zijn");
 			}
 		} else {
-			fouten.put("aantalflessen", "Moet een geheel getal zijn");
+			fouten.put("aantalflessen", "Moet een geheel getal kleiner dan 100000 zijn");
 		}
 
 		if (!fouten.isEmpty()) {
 			request.setAttribute("fouten", fouten);
+			if (StringUtils.isLong(wijnIdString)) {
+				long wijnId = Long.parseLong(wijnIdString);
+				wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
+			}
 			request.getRequestDispatcher(VIEW).forward(request, response);
 		} else {
 			response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + REDIRECT_URL));

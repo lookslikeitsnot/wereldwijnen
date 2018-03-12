@@ -20,7 +20,7 @@ import be.vdab.valueobjects.Bestelbonlijn;
 
 @Entity
 @Table(name = "bestelbonnen")
-public class Bestelbon implements Serializable{
+public class Bestelbon implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class Bestelbon implements Serializable{
 	@ElementCollection
 	@CollectionTable(name = "bestelbonlijnen", joinColumns = @JoinColumn(name = "bonid"))
 	private Set<Bestelbonlijn> bestelbonlijnen;
-	
+
 	public Bestelbon(String naam, Adres adres, short bestelwijze, Set<Bestelbonlijn> bestelbonlijnen) {
 		this.naam = naam;
 		this.adres = adres;
@@ -43,13 +43,18 @@ public class Bestelbon implements Serializable{
 		this.bestelbonlijnen = bestelbonlijnen;
 		besteld = LocalDateTime.now();
 	}
-	
-	public Bestelbon() {}
-	
+
+	public Bestelbon() {
+	}
+
 	public long getId() {
 		return id;
 	}
-	
+
+	public Set<Bestelbonlijn> getBestelbonlijnen() {
+		return bestelbonlijnen;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -61,6 +66,7 @@ public class Bestelbon implements Serializable{
 		result = prime * result + ((naam == null) ? 0 : naam.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

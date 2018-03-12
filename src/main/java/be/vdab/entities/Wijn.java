@@ -29,22 +29,27 @@ public class Wijn implements Serializable {
 	private int inBestelling;
 	@Version
 	private int versie;
-	
+
 	public long getId() {
 		return id;
 	}
+
 	public Soort getSoort() {
 		return soort;
 	}
+
 	public short getJaar() {
 		return jaar;
 	}
+
 	public short getBeoordeling() {
 		return beoordeling;
 	}
+
 	public BigDecimal getPrijs() {
 		return prijs;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -53,6 +58,7 @@ public class Wijn implements Serializable {
 		result = prime * result + ((soort == null) ? 0 : soort.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

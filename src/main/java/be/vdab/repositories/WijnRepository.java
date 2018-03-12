@@ -16,4 +16,12 @@ public class WijnRepository extends AbstractRepository {
 	public Optional<Wijn> find(long wijnId){
 		return Optional.ofNullable(getEntityManager().find(Wijn.class, wijnId));
 	}
+	
+	public void nieuweBestelling(long id, int aantal) {
+		getEntityManager()
+			.createNamedQuery("Wijn.updateBestelling")
+			.setParameter("id", id)
+			.setParameter("aantal", aantal)
+			.executeUpdate();
+	}
 }

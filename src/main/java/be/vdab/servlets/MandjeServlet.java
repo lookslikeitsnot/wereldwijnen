@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import be.vdab.entities.Bestelbon;
 import be.vdab.services.BestelbonService;
+import be.vdab.services.WijnService;
 import be.vdab.util.StringUtils;
 import be.vdab.valueobjects.Adres;
 import be.vdab.valueobjects.Mandje;
@@ -25,6 +26,8 @@ import be.vdab.valueobjects.Mandje;
 public class MandjeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String VIEW = "/WEB-INF/JSP/mandje.jsp";
+	private final transient BestelbonService bestelbonService = new BestelbonService();
+	
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -55,7 +58,6 @@ public class MandjeServlet extends HttpServlet {
 					Bestelbon bestelbon = new Bestelbon(gegevens.get("naam"), adres, (short) (gegevens.get("bestelwijze").equals("afhalen") ? 0 : 1), mandje.getMandje());
 					try {
 						session.removeAttribute("mandje");
-						BestelbonService bestelbonService = new BestelbonService();
 						bestelbonService.create(bestelbon);
 						session.setAttribute("bestelbonnummer", bestelbon.getId());
 					} catch (PersistenceException ex) {

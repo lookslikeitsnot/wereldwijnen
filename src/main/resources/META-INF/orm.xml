@@ -4,11 +4,6 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
 http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 	version="2.1">
-<!-- 	<named-query name='Wijn.findAll'> -->
-<!-- 		<query> -->
-<!-- 			select w from Wijn w order by w.jaar -->
-<!-- 		</query> -->
-<!-- 	</named-query> -->
 	<named-query name='Wijn.findBySoort'>
 		<query>
 			select w from Wijn w where w.soort.id = :soortId order by w.jaar
@@ -22,6 +17,11 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 	<named-query name='Land.findAll'>
 		<query>
 			select l from Land l order by l.naam
+		</query>
+	</named-query>
+	<named-query name='Wijn.updateBestelling'>
+		<query>
+			update Wijn w set w.inBestelling = w.inBestelling + :aantal where w.id = :id
 		</query>
 	</named-query>
 </entity-mappings>

@@ -51,24 +51,25 @@ public class Mandje {
 	}
 
 	public BigDecimal getPrijs(WijnService wijnService) {
-		BigDecimal prijs = BigDecimal.ZERO;
-		for (Map.Entry<Long, Integer> artikelEnAantal : mandje.entrySet()) {
-			Optional<Wijn> optioneleWijn = wijnService.find(artikelEnAantal.getKey());
-			if (optioneleWijn.isPresent()) {
-				prijs = prijs
-						.add(optioneleWijn.get().getPrijs().multiply(BigDecimal.valueOf(artikelEnAantal.getValue())));
-			}
-		}
-		return prijs;
+//		BigDecimal prijs = BigDecimal.ZERO;
+//		for (Map.Entry<Long, Integer> artikelEnAantal : mandje.entrySet()) {
+//			Optional<Wijn> optioneleWijn = wijnService.find(artikelEnAantal.getKey());
+//			if (optioneleWijn.isPresent()) {
+//				prijs = prijs
+//						.add(optioneleWijn.get().getPrijs().multiply(BigDecimal.valueOf(artikelEnAantal.getValue())));
+//			}
+//		}
+//		return prijs;
+		return toBestelbonlijnen(wijnService).stream().map(lijn->lijn.getPrijs()).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
-	
-	public Set<Bestelbonlijn> toBestelbonlijnen(WijnService wijnService){
+
+	public Set<Bestelbonlijn> toBestelbonlijnen(WijnService wijnService) {
 		Set<Bestelbonlijn> bestelbonlijnen = new LinkedHashSet<>();
 		mandje.forEach((wijnId, aantal) -> wijnService.find(wijnId)
 				.ifPresent(wijn -> bestelbonlijnen.add(new Bestelbonlijn(wijn, aantal))));
 		return bestelbonlijnen;
 	}
-	
+
 	public boolean isEmpty() {
 		return mandje.isEmpty();
 	}

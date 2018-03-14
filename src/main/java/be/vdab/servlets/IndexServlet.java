@@ -46,27 +46,27 @@ public class IndexServlet extends HttpServlet {
 				}
 			}
 		}
-		if (request.getQueryString() != null) {
-			Optional<Land> optionalLand = getLand(request);
-			if(optionalLand.isPresent()) {
-				request.setAttribute("land", optionalLand.get());
-				request.setAttribute("soorten", soortService.findByLand(optionalLand.get().getId()));
-			}
-			String landIdString = request.getParameter("landid");
-			if (StringUtils.isLong(landIdString)) {
-				long landId = Long.parseLong(landIdString);
-				landService.find(landId).ifPresent(land -> request.setAttribute("land", land));
-				List<Soort> soorten = soortService.findByLand(landId);
-				request.setAttribute("soorten", soorten);
-				String soortIdString = request.getParameter("soortid");
-				if (StringUtils.isLong(soortIdString)) {
-					long soortId = Long.parseLong(soortIdString);
-					soortService.find(soortId).ifPresent(soort -> request.setAttribute("soort", soort));
-					List<Wijn> wijnen = wijnService.findBySoort(soortId);
-					request.setAttribute("wijnen", wijnen);
-				}
-			}
-		}
+//		if (request.getQueryString() != null) {
+//			Optional<Land> optionalLand = getLand(request);
+//			if(optionalLand.isPresent()) {
+//				request.setAttribute("land", optionalLand.get());
+//				request.setAttribute("soorten", soortService.findByLand(optionalLand.get().getId()));
+//			}
+//			String landIdString = request.getParameter("landid");
+//			if (StringUtils.isLong(landIdString)) {
+//				long landId = Long.parseLong(landIdString);
+//				landService.find(landId).ifPresent(land -> request.setAttribute("land", land));
+//				List<Soort> soorten = soortService.findByLand(landId);
+//				request.setAttribute("soorten", soorten);
+//				String soortIdString = request.getParameter("soortid");
+//				if (StringUtils.isLong(soortIdString)) {
+//					long soortId = Long.parseLong(soortIdString);
+//					soortService.find(soortId).ifPresent(soort -> request.setAttribute("soort", soort));
+//					List<Wijn> wijnen = wijnService.findBySoort(soortId);
+//					request.setAttribute("wijnen", wijnen);
+//				}
+//			}
+//		}
 		
 		request.getRequestDispatcher(VIEW).forward(request, response);
 	}

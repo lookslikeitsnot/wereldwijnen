@@ -31,16 +31,17 @@
 			</tr>
 		</table>
 		<form method="post">
-			<label for='naam'>Naam</label>${fouten.naam}<br>
+			<label for='naam'>Naam</label> ${fouten.naam}<br>
 			<input type='text' name="naam" id='naam' autofocus required><br>
-			<label for='straat'>Straat</label>${fouten.straat}<br>
+			<label for='straat'>Straat</label> ${fouten.straat}<br>
 			<input type='text' name="straat" id='straat' required><br>
-			<label for='huisnummer'>Huisnummer</label>${fouten.huisnummer}<br>
+			<label for='huisnummer'>Huisnummer</label> ${fouten.huisnummer}<br>
 			<input type='text' name="huisnummer" id='huisnummer' required><br>
-			<label for='postcode'>Postcode</label>${fouten.postcode}<br>
+			<label for='postcode'>Postcode</label> ${fouten.postcode}<br>
 			<input type='text' name="postcode" id='postcode' required><br>
-			<label for='gemeente'>Gemeente</label>${fouten.gemeente}<br>
+			<label for='gemeente'>Gemeente</label> ${fouten.gemeente}<br>
 			<input type='text' name="gemeente" id='gemeente' required><br>
+			<c:if test="${not empty fouten.bestelwijze}">Kies een bestelwijze<br></c:if>
 			<input type="radio" name='bestelwijze' value='afhalen' required>Afhalen<br>
 			<input type="radio" name='bestelwijze' value='opsturen'>Opsturen<br>
 			<input type="submit" value='Als bon bevestigen'>

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +25,7 @@ public class Wijn implements Serializable {
 	private short jaar;
 	private short beoordeling;
 	private BigDecimal prijs;
+	@SuppressWarnings("unused")
 	private int inBestelling;
 	@Version
 	private int versie;

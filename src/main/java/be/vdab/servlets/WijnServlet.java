@@ -3,6 +3,7 @@ package be.vdab.servlets;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,39 +43,29 @@ public class WijnServlet extends HttpServlet {
 		Map<String, String> fouten = new LinkedHashMap<>();
 		String wijnIdString = request.getParameter("wijnid");
 		String aantalFlessenString = request.getParameter("aantalflessen");
-		if (StringUtils.isInt(aantalFlessenString)) {
-			int aantalFlessen = Integer.parseInt(aantalFlessenString);
-			if (aantalFlessen > 0 && aantalFlessen < 100000) {
-				if (StringUtils.isLong(wijnIdString)) {
+
+		if (StringUtils.isLong(wijnIdString)) {
+			long wijnId = Long.parseLong(wijnIdString);
+			if (StringUtils.isInt(aantalFlessenString)) {
+				int aantalFlessen = Integer.parseInt(aantalFlessenString);
+				if (aantalFlessen > 0 && aantalFlessen < 100000) {
 					HttpSession session = request.getSession();
-					long wijnId = Long.parseLong(wijnIdString);
-					// Mandje mandje = (Mandje) session.getAttribute(MANDJE);
-					// if (mandje == null) {
-					// mandje = new Mandje();
-					// }
-					Mandje mandje = (Mandje) session.getAttribute(MANDJE) == null ? new Mandje()
-							: (Mandje) session.getAttribute(MANDJE);
-					wijnService.find(wijnId)
-							.ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
-					// Optional<Wijn> optionalWijn = wijnService.find(Long.parseLong(wijnIdString));
-					// if (optionalWijn.isPresent()) {
-					// mandje.add(new Bestelbonlijn(optionalWijn.get(), aantalFlessen));
-					// }
+					Mandje mandje = Optional.ofNullable((Mandje)session.getAttribute(MANDJE)).orElse(new Mandje());
+//					Mandje mandje = (Mandje) session.getAttribute(MANDJE) == null ? new Mandje()
+//							: (Mandje) session.getAttribute(MANDJE);
+					wijnService.find(wijnId).ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
 					session.setAttribute(MANDJE, mandje);
+				} else {
+					fouten.put("aantalflessen", "Moet groter dan 1 zijn");
 				}
 			} else {
-				fouten.put("aantalflessen", "Moet groter dan 1 en kleiner dan 100000 zijn");
+				fouten.put("aantalflessen", "Moet een geheel getal zijn");
 			}
-		} else {
-			fouten.put("aantalflessen", "Moet een geheel getal kleiner dan 100000 zijn");
+			wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
 		}
 
 		if (!fouten.isEmpty()) {
 			request.setAttribute("fouten", fouten);
-			if (StringUtils.isLong(wijnIdString)) {
-				long wijnId = Long.parseLong(wijnIdString);
-				wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
-			}
 			request.getRequestDispatcher(VIEW).forward(request, response);
 		} else {
 			response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + REDIRECT_URL));

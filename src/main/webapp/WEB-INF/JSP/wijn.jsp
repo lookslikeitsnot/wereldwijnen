@@ -29,7 +29,7 @@
 			</dl>
 			<form method="post">
 				<label for="aantalflessen">Aantal flessen</label> <input
-					type="number" min='1' name="aantalflessen" id="aantalflessen" autofocus required>${fouten.aantalflessen}
+					type="number" min='1' max="100000" name="aantalflessen" id="aantalflessen" autofocus required>${fouten.aantalflessen}
 				<input type="submit" value="Toevoegen">
 			</form>
 		</c:when>

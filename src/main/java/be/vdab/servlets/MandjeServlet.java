@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import be.vdab.entities.Bestelbon;
+import be.vdab.exceptions.RecordAangepastException;
 import be.vdab.services.BestelbonService;
 import be.vdab.services.WijnService;
 import be.vdab.util.StringUtils;
@@ -32,11 +33,7 @@ public class MandjeServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		if (getMandje(request).isPresent()) {
-			Mandje mandje = (Mandje) request.getSession(false).getAttribute(MANDJE);
-			request.setAttribute(MANDJE, mandje.toBestelbonlijnen(wijnService));
-			request.setAttribute("mandjePrijs", mandje.getPrijs(wijnService));
-		}
+		setMandjeAttributes(request);
 		request.getRequestDispatcher(VIEW).forward(request, response);
 	}
 
@@ -47,27 +44,32 @@ public class MandjeServlet extends HttpServlet {
 		if (optionalMandje.isPresent()) {
 			HttpSession session = request.getSession(false);
 			Mandje mandje = optionalMandje.get();
-			Optional<Map<String,String>> optionalGegevens = checkGegevens(request);
+			Optional<Map<String, String>> optionalGegevens = checkGegevens(request);
 			if (optionalGegevens.isPresent()) {
-				Map<String,String> gegevens = optionalGegevens.get();
+				Map<String, String> gegevens = optionalGegevens.get();
 				Adres adres = new Adres(gegevens.get("straat"), gegevens.get("huisnummer"), gegevens.get("postcode"),
 						gegevens.get("gemeente"));
 				Bestelbon bestelbon = new Bestelbon(gegevens.get("naam"), adres,
-						(short) (gegevens.get("bestelwijze").equals("afhalen") ? 0 : 1), mandje.toBestelbonlijnen(wijnService));
+						(short) (gegevens.get("bestelwijze").equals("afhalen") ? 0 : 1),
+						mandje.toBestelbonlijnen(wijnService));
 				try {
 					session.removeAttribute(MANDJE);
 					bestelbonService.create(bestelbon);
 					session.setAttribute("bestelbonnummer", bestelbon.getId());
 					response.sendRedirect(response.encodeRedirectURL(request.getRequestURI()));
-				} catch (PersistenceException ex) {}
+				} catch (PersistenceException | RecordAangepastException ex) {}
 
 			} else {
+				setMandjeAttributes(request);
 				request.getRequestDispatcher(VIEW).forward(request, response);
 			}
+		} else {
+			setMandjeAttributes(request);
+			request.getRequestDispatcher(VIEW).forward(request, response);
 		}
 	}
-	
-	private Optional<Map<String,String>> checkGegevens(HttpServletRequest request) {
+
+	private Optional<Map<String, String>> checkGegevens(HttpServletRequest request) {
 		Map<String, String> fouten = new LinkedHashMap<>();
 		List<String> parameters = List.of("naam", "straat", "huisnummer", "postcode", "gemeente", "bestelwijze");
 		Map<String, String> gegevens = new LinkedHashMap<>();
@@ -79,21 +81,29 @@ public class MandjeServlet extends HttpServlet {
 				fouten.put(parameter, "verplicht");
 			}
 		}
-		if(!fouten.isEmpty()) {
+		if (!fouten.isEmpty()) {
 			request.setAttribute("fouten", fouten);
 			return Optional.empty();
 		} else {
 			return Optional.of(gegevens);
 		}
 	}
-	
+
 	private Optional<Mandje> getMandje(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
-		if(session == null)
+		if (session == null)
 			return Optional.empty();
-		Mandje mandje = (Mandje) session.getAttribute("mandje");
-		if(mandje == null || mandje.isEmpty())
+		Mandje mandje = (Mandje) session.getAttribute(MANDJE);
+		if (mandje == null || mandje.isEmpty())
 			return Optional.empty();
 		return Optional.of(mandje);
+	}
+
+	private void setMandjeAttributes(HttpServletRequest request) {
+		Optional<Mandje> optionalMandje = getMandje(request);
+		if (optionalMandje.isPresent()) {
+			request.setAttribute(MANDJE, optionalMandje.get().toBestelbonlijnen(wijnService));
+			request.setAttribute("mandjePrijs", optionalMandje.get().getPrijs(wijnService));
+		}
 	}
 }

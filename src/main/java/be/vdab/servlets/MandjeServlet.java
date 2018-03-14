@@ -1,11 +1,10 @@
 package be.vdab.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 import javax.servlet.ServletException;
@@ -26,51 +25,75 @@ import be.vdab.valueobjects.Mandje;
 public class MandjeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String VIEW = "/WEB-INF/JSP/mandje.jsp";
+	private static final String MANDJE = "mandje";
 	private final transient BestelbonService bestelbonService = new BestelbonService();
-	
-	
+	private final transient WijnService wijnService = new WijnService();
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		if (getMandje(request).isPresent()) {
+			Mandje mandje = (Mandje) request.getSession(false).getAttribute(MANDJE);
+			request.setAttribute(MANDJE, mandje.toBestelbonlijnen(wijnService));
+			request.setAttribute("mandjePrijs", mandje.getPrijs(wijnService));
+		}
 		request.getRequestDispatcher(VIEW).forward(request, response);
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Map<String, String> fouten = new LinkedHashMap<>();
-		HttpSession session = request.getSession(false);
-		if(session != null) {
-			Mandje mandje = (Mandje) session.getAttribute("mandje");
-			if(mandje != null && !mandje.isEmpty()) {
-				List<String> parameters = new ArrayList<>(Arrays.asList("naam", "straat", "huisnummer", "postcode", "gemeente", "bestelwijze"));
-				Map<String, String> gegevens = new LinkedHashMap<>();
-				for(String parameter:parameters) {
-					String requestParameter = request.getParameter(parameter);
-					if(StringUtils.isStringValid(requestParameter)) {
-						gegevens.put(parameter, requestParameter);
-					} else {
-						fouten.put(parameter, "verplicht");
-					}
-				}
-				if(fouten.isEmpty()) {
-					Adres adres = new Adres(gegevens.get("straat"), gegevens.get("huisnummer"), gegevens.get("postcode"), gegevens.get("gemeente"));
-					Bestelbon bestelbon = new Bestelbon(gegevens.get("naam"), adres, (short) (gegevens.get("bestelwijze").equals("afhalen") ? 0 : 1), mandje.getMandje());
-					try {
-						session.removeAttribute("mandje");
-						bestelbonService.create(bestelbon);
-						session.setAttribute("bestelbonnummer", bestelbon.getId());
-					} catch (PersistenceException ex) {
-						fouten.put("bestelbon", "niet gemaakt");
-					}
-				}
+		Optional<Mandje> optionalMandje = getMandje(request);
+		if (optionalMandje.isPresent()) {
+			HttpSession session = request.getSession(false);
+			Mandje mandje = optionalMandje.get();
+			Optional<Map<String,String>> optionalGegevens = checkGegevens(request);
+			if (optionalGegevens.isPresent()) {
+				Map<String,String> gegevens = optionalGegevens.get();
+				Adres adres = new Adres(gegevens.get("straat"), gegevens.get("huisnummer"), gegevens.get("postcode"),
+						gegevens.get("gemeente"));
+				Bestelbon bestelbon = new Bestelbon(gegevens.get("naam"), adres,
+						(short) (gegevens.get("bestelwijze").equals("afhalen") ? 0 : 1), mandje.toBestelbonlijnen(wijnService));
+				try {
+					session.removeAttribute(MANDJE);
+					bestelbonService.create(bestelbon);
+					session.setAttribute("bestelbonnummer", bestelbon.getId());
+					response.sendRedirect(response.encodeRedirectURL(request.getRequestURI()));
+				} catch (PersistenceException ex) {}
+
+			} else {
+				request.getRequestDispatcher(VIEW).forward(request, response);
 			}
 		}
-		if(fouten.isEmpty()) {
-			response.sendRedirect(response.encodeRedirectURL(request.getRequestURI()));
-		} else {
-			request.setAttribute("fouten", fouten);
-			request.getRequestDispatcher(VIEW).forward(request, response);
+	}
+	
+	private Optional<Map<String,String>> checkGegevens(HttpServletRequest request) {
+		Map<String, String> fouten = new LinkedHashMap<>();
+		List<String> parameters = List.of("naam", "straat", "huisnummer", "postcode", "gemeente", "bestelwijze");
+		Map<String, String> gegevens = new LinkedHashMap<>();
+		for (String parameter : parameters) {
+			String requestParameter = request.getParameter(parameter);
+			if (StringUtils.isStringValid(requestParameter)) {
+				gegevens.put(parameter, requestParameter);
+			} else {
+				fouten.put(parameter, "verplicht");
+			}
 		}
+		if(!fouten.isEmpty()) {
+			request.setAttribute("fouten", fouten);
+			return Optional.empty();
+		} else {
+			return Optional.of(gegevens);
+		}
+	}
+	
+	private Optional<Mandje> getMandje(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if(session == null)
+			return Optional.empty();
+		Mandje mandje = (Mandje) session.getAttribute("mandje");
+		if(mandje == null || mandje.isEmpty())
+			return Optional.empty();
+		return Optional.of(mandje);
 	}
 }

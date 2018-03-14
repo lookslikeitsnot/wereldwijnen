@@ -3,7 +3,6 @@ package be.vdab.servlets;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,10 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import be.vdab.entities.Wijn;
 import be.vdab.services.WijnService;
 import be.vdab.util.StringUtils;
-import be.vdab.valueobjects.Bestelbonlijn;
 import be.vdab.valueobjects.Mandje;
 
 @WebServlet("/wijn.htm")
@@ -49,19 +46,21 @@ public class WijnServlet extends HttpServlet {
 			int aantalFlessen = Integer.parseInt(aantalFlessenString);
 			if (aantalFlessen > 0 && aantalFlessen < 100000) {
 				if (StringUtils.isLong(wijnIdString)) {
-					long wijnId = Long.parseLong(wijnIdString);
-					wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
-					;
 					HttpSession session = request.getSession();
-					Mandje mandje = (Mandje) session.getAttribute(MANDJE);
-					if (mandje == null) {
-						mandje = new Mandje();
-					}
-					Optional<Wijn> optionalWijn = wijnService.find(wijnId);
-					if (optionalWijn.isPresent()) {
-						mandje.add(new Bestelbonlijn(optionalWijn.get(), aantalFlessen));
-					}
-					session.setAttribute("mandje", mandje);
+					long wijnId = Long.parseLong(wijnIdString);
+					// Mandje mandje = (Mandje) session.getAttribute(MANDJE);
+					// if (mandje == null) {
+					// mandje = new Mandje();
+					// }
+					Mandje mandje = (Mandje) session.getAttribute(MANDJE) == null ? new Mandje()
+							: (Mandje) session.getAttribute(MANDJE);
+					wijnService.find(wijnId)
+							.ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
+					// Optional<Wijn> optionalWijn = wijnService.find(Long.parseLong(wijnIdString));
+					// if (optionalWijn.isPresent()) {
+					// mandje.add(new Bestelbonlijn(optionalWijn.get(), aantalFlessen));
+					// }
+					session.setAttribute(MANDJE, mandje);
 				}
 			} else {
 				fouten.put("aantalflessen", "Moet groter dan 1 en kleiner dan 100000 zijn");

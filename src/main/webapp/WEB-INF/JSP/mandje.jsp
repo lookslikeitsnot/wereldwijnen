@@ -16,7 +16,7 @@
 				<th>Aantal</th>
 				<th>Te betalen</th>
 			</tr>
-			<c:forEach items="${sessionScope.mandje.mandje}" var="mandjeLijn">
+			<c:forEach items="${mandje}" var="mandjeLijn">
 				<tr>
 					<td>${mandjeLijn.wijn.soort.land.naam}
 						${mandjeLijn.wijn.soort.naam} ${mandjeLijn.wijn.jaar}</td>
@@ -27,7 +27,7 @@
 			</c:forEach>
 			<tr>
 				<td colspan="3"></td>
-				<td>Totaal:${sessionScope.mandje.prijs}</td>
+				<td>Totaal:${mandjePrijs}</td>
 			</tr>
 		</table>
 		<form method="post">

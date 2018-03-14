@@ -31,6 +31,6 @@ public class StringUtils {
 	}
 	
 	public static boolean isStringValid(String string) {
-		return (string != null && !string.trim().isEmpty());
+		return (string != null && !string.trim().isEmpty() && string.length()<=50);
 	}
 }

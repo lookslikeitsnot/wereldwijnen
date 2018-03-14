@@ -51,8 +51,6 @@ public class WijnServlet extends HttpServlet {
 				if (aantalFlessen > 0 && aantalFlessen < 100000) {
 					HttpSession session = request.getSession();
 					Mandje mandje = Optional.ofNullable((Mandje)session.getAttribute(MANDJE)).orElse(new Mandje());
-//					Mandje mandje = (Mandje) session.getAttribute(MANDJE) == null ? new Mandje()
-//							: (Mandje) session.getAttribute(MANDJE);
 					wijnService.find(wijnId).ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
 					session.setAttribute(MANDJE, mandje);
 				} else {

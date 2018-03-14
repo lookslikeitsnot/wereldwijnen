@@ -53,18 +53,16 @@ public class MandjeServlet extends HttpServlet {
 						(short) (gegevens.get("bestelwijze").equals("afhalen") ? 0 : 1),
 						mandje.toBestelbonlijnen(wijnService));
 				try {
-					session.removeAttribute(MANDJE);
 					bestelbonService.create(bestelbon);
+					session.removeAttribute(MANDJE);
 					session.setAttribute("bestelbonnummer", bestelbon.getId());
 					response.sendRedirect(response.encodeRedirectURL(request.getRequestURI()));
 				} catch (PersistenceException | RecordAangepastException ex) {}
-
 			} else {
 				setMandjeAttributes(request);
 				request.getRequestDispatcher(VIEW).forward(request, response);
 			}
 		} else {
-			setMandjeAttributes(request);
 			request.getRequestDispatcher(VIEW).forward(request, response);
 		}
 	}
@@ -85,7 +83,7 @@ public class MandjeServlet extends HttpServlet {
 			request.setAttribute("fouten", fouten);
 			return Optional.empty();
 		} else {
-			return Optional.of(gegevens);
+			return Optional.ofNullable(gegevens);
 		}
 	}
 
@@ -96,7 +94,7 @@ public class MandjeServlet extends HttpServlet {
 		Mandje mandje = (Mandje) session.getAttribute(MANDJE);
 		if (mandje == null || mandje.isEmpty())
 			return Optional.empty();
-		return Optional.of(mandje);
+		return Optional.ofNullable(mandje);
 	}
 
 	private void setMandjeAttributes(HttpServletRequest request) {

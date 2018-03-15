@@ -57,7 +57,9 @@ public class MandjeServlet extends HttpServlet {
 					session.removeAttribute(MANDJE);
 					session.setAttribute("bestelbonnummer", bestelbon.getId());
 					response.sendRedirect(response.encodeRedirectURL(request.getRequestURI()));
-				} catch (PersistenceException | RecordAangepastException ex) {}
+				} catch (PersistenceException | RecordAangepastException ex) {
+					request.getRequestDispatcher(VIEW).forward(request, response);
+				}
 			} else {
 				setMandjeAttributes(request);
 				request.getRequestDispatcher(VIEW).forward(request, response);

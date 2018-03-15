@@ -40,6 +40,16 @@ public class WijnServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		Optional<Map<String,String>> optionalFouten = checkAantalFlessen(request);
+		if (optionalFouten.isPresent()) {
+			request.setAttribute("fouten", optionalFouten.get());
+			request.getRequestDispatcher(VIEW).forward(request, response);
+		} else {
+			response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + REDIRECT_URL));
+		}
+	}
+	
+	private Optional<Map<String,String>> checkAantalFlessen(HttpServletRequest request){
 		Map<String, String> fouten = new LinkedHashMap<>();
 		String wijnIdString = request.getParameter("wijnid");
 		String aantalFlessenString = request.getParameter("aantalflessen");
@@ -48,11 +58,16 @@ public class WijnServlet extends HttpServlet {
 			long wijnId = Long.parseLong(wijnIdString);
 			if (StringUtils.isInt(aantalFlessenString)) {
 				int aantalFlessen = Integer.parseInt(aantalFlessenString);
-				if (aantalFlessen > 0 && aantalFlessen <= 100000) {
-					HttpSession session = request.getSession();
-					Mandje mandje = Optional.ofNullable((Mandje)session.getAttribute(MANDJE)).orElse(new Mandje());
-					wijnService.find(wijnId).ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
-					session.setAttribute(MANDJE, mandje);
+				if (aantalFlessen > 0) {
+					if (aantalFlessen <= 100000) {
+						HttpSession session = request.getSession();
+						Mandje mandje = Optional.ofNullable((Mandje) session.getAttribute(MANDJE)).orElse(new Mandje());
+						wijnService.find(wijnId).ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
+						session.setAttribute(MANDJE, mandje);
+						return Optional.empty();
+					} else {
+						fouten.put("aantalflessen", "Moet kleiner dan 100 000 zijn");
+					}
 				} else {
 					fouten.put("aantalflessen", "Moet groter dan 1 zijn");
 				}
@@ -61,13 +76,7 @@ public class WijnServlet extends HttpServlet {
 			}
 			wijnService.find(wijnId).ifPresent(wijn -> request.setAttribute("wijn", wijn));
 		}
-
-		if (!fouten.isEmpty()) {
-			request.setAttribute("fouten", fouten);
-			request.getRequestDispatcher(VIEW).forward(request, response);
-		} else {
-			response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + REDIRECT_URL));
-		}
+		return Optional.ofNullable(fouten);
 	}
 
 }

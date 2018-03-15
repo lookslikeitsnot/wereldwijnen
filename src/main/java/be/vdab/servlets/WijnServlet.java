@@ -48,7 +48,7 @@ public class WijnServlet extends HttpServlet {
 			long wijnId = Long.parseLong(wijnIdString);
 			if (StringUtils.isInt(aantalFlessenString)) {
 				int aantalFlessen = Integer.parseInt(aantalFlessenString);
-				if (aantalFlessen > 0 && aantalFlessen < 100000) {
+				if (aantalFlessen > 0 && aantalFlessen <= 100000) {
 					HttpSession session = request.getSession();
 					Mandje mandje = Optional.ofNullable((Mandje)session.getAttribute(MANDJE)).orElse(new Mandje());
 					wijnService.find(wijnId).ifPresent(wijn -> mandje.add(wijnId, aantalFlessen));
